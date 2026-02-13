@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "workspaces": [
+        "internal-api",
+        "public-webserver",
+        "shared"
+    ]
+}
