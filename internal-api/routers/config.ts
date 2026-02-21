@@ -6,6 +6,8 @@ import { knex } from "../knexfile";
 import { getNumberPublicSectionFieldUsages, getNumberSectionFieldUsages, getSectionFieldsInfo } from "../sections/section-fields";
 import { anySectionsExist, sectionFieldHasAnyDuplicates, sectionWithoutFieldExists } from "../sections/sections";
 import { UpdateCollector } from "../helpers/updateCollector";
+import { getSectionSearchFilters } from "../section-search/filters";
+import { getSectionSearchColumns } from "../section-search/columns";
 
 export const configRouter = express.Router();
 
@@ -146,4 +148,17 @@ configRouter.post('/sections', maybeAttachApiKey, requireApiKey, async (request:
     } catch {
         await trx.rollback();
     }
+});
+
+configRouter.get('/sectionSearch', maybeAttachApiKey, requireApiKey, async (request: Request, res: Response) => {
+
+    const [columns, filters] = await Promise.all([
+        getSectionSearchColumns(knex),
+        getSectionSearchFilters(knex)
+    ]);
+
+    res.json({
+        "columns": columns,
+        "filters": filters
+    });
 });
