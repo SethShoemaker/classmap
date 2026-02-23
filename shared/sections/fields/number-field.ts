@@ -1,7 +1,9 @@
 import { SectionField } from "./field";
 import { SectionFieldType } from "../field-definitions/type";
+import { immerable } from "immer";
 
 export class NumberSectionField extends SectionField {
+    [immerable] = true;
 
     public get type(): SectionFieldType {
         return SectionFieldType.text;

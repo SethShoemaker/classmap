@@ -1,8 +1,10 @@
+import { immerable } from "immer";
 import { SectionFieldDefinition } from "./definition";
 import { SectionFieldType } from "./type";
 import * as z from "zod";
 
 export class SectionFieldDefinitions {
+    [immerable] = true
 
     protected _fields = new Map<string, SectionFieldDefinition>();
 
@@ -47,7 +49,7 @@ export class SectionFieldDefinitions {
             }
 
             if (!field.required) {
-                value = z.optional(value);
+                value = z.nullable(value);
             }
 
             return [key, value];

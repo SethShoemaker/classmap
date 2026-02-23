@@ -1,8 +1,10 @@
+import { immerable } from "immer";
 import { SectionFieldType } from "./field-definitions/type";
 import { SectionField } from "./fields/field";
 import { TextSectionField } from "./fields/text-field";
 
 export class Section {
+    [immerable] = true
 
     /**
      * Map from field name to SectionField

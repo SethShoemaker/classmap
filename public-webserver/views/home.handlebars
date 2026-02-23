@@ -1,0 +1,85 @@
+<div class="card bg-base-100 shadow-md mb-6">
+    <div class="card-body">
+        <h2 class="card-title">Filters</h2>
+
+        <form method="GET">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                {{#each filters}}
+                <div class="form-control w-full">
+                    <label class="label" for="{{slug}}">
+                        <span class="label-text">{{name}}</span>
+                    </label>
+
+                    {{#if (eq type "text_search")}}
+                    <input type="text" name="{{slug}}" id="{{slug}}" value="{{lookup ../query slug}}"
+                        class="input input-bordered w-full" />
+                    {{/if}}
+
+                    {{#if (eq type "multi_select_or")}}
+                    <select name="{{slug}}" id="{{slug}}" multiple class="select select-bordered w-full h-32">
+                        {{#each options}}
+                        <option value="{{this.value}}" {{#if (includes (lookup ../../query ../slug)
+                            this.value)}}selected{{/if}}>
+                            {{this.label}}
+                        </option>
+                        {{/each}}
+                    </select>
+                    {{/if}}
+
+                </div>
+                {{/each}}
+
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+
+                <a href="?" class="btn btn-ghost">
+                    Reset
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div class="card bg-base-100 shadow-md">
+    <div class="card-body p-0">
+        <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr>
+                        {{#each columns}}
+                        <th>{{name}}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{#each rows}}
+                    <tr>
+                        {{#each ../columns}}
+                        <td>
+                            {{lookup ../this field}}
+                        </td>
+                        {{/each}}
+                    </tr>
+                    {{/each}}
+
+                    {{#unless rows.length}}
+                    <tr>
+                        <td colspan="{{columns.length}}" class="text-center py-6 text-base-content/60">
+                            No users found
+                        </td>
+                    </tr>
+                    {{/unless}}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,8 @@
+import { immerable } from "immer";
 import { SectionFieldType } from "./type";
 
 export class SectionFieldDefinition {
+    [immerable] = true
 
     protected _name: string;
     public get name(): string {
@@ -25,6 +27,16 @@ export class SectionFieldDefinition {
     protected _required: boolean;
     public get required(): boolean {
         return this._required;
+    }
+
+    public get basicObject(): object {
+        return {
+            name: this._name,
+            type: this._type,
+            displayPublically: this._displayPublically,
+            unique: this._unique,
+            required: this._required
+        }
     }
 
     public constructor(name: string, type: SectionFieldType, displayPublically: boolean, unique: boolean, required: boolean) {

@@ -1,14 +1,9 @@
 import { Knex } from "knex";
-import { SectionSearchFilterType, sectionSearchFilterType } from "./filter-type";
+import { sectionSearchFilterType } from "./filter-type";
 
-export type SectionSearchFilter = {
-    name: string,
-    slug: string,
-    type: SectionSearchFilterType,
-    data: Record<string, any>
-};
+type Filter
 
-export async function getSectionSearchFilters(knex: Knex | Knex.Transaction): Promise<SectionSearchFilter[]> {
+export async function getSectionSearchFilters(knex: Knex | Knex.Transaction): Promise<Record<string,any>[]> {
 
     return await knex
         .table("section_search_filter")
@@ -30,19 +25,16 @@ export async function getSectionSearchFilters(knex: Knex | Knex.Transaction): Pr
         ])
         .then(rows => Promise.all(rows.map(async row => {
 
-            let type: SectionSearchFilterType;
-            let data: Record<string, any>;
+            let typeInfo: Record<string, any>;
 
             switch (row.filter_type) {
                 case sectionSearchFilterType.textSearch.id:
-                    type = sectionSearchFilterType.textSearch;
-                    data = {
+                    typeInfo = {
                         fieldName: row.text_search_filter_field_name
                     }
                     break;
                 case sectionSearchFilterType.multiSelectOr.id:
-                    type = sectionSearchFilterType.multiSelectOr;
-                    data = {
+                    typeInfo = {
                         fieldName: row.multi_select_or_filter_field_name,
                         inputOptions: await knex
                             .table("section_field_value")
@@ -60,8 +52,8 @@ export async function getSectionSearchFilters(knex: Knex | Knex.Transaction): Pr
             return {
                 name: row.filter_name,
                 slug: row.filter_slug,
-                type: type,
-                data: data
+                type: row.filter_type,
+                ...typeInfo
             }
         })));
 }

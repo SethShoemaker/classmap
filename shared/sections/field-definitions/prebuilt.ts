@@ -9,6 +9,24 @@ export const sisIdSectionFieldDefinition = new SectionFieldDefinition(
     true
 );
 
+export const courseCodeSectionFieldDefinition = new SectionFieldDefinition(
+    "Course Code",
+    SectionFieldType.text,
+    true,
+    false,
+    true
+);
+
+export const titleSectionFieldDefinition = new SectionFieldDefinition(
+    "Title",
+    SectionFieldType.text,
+    true,
+    false,
+    true
+);
+
 export const prebuiltSectionFieldDefinitions = [
-    sisIdSectionFieldDefinition
+    sisIdSectionFieldDefinition,
+    courseCodeSectionFieldDefinition,
+    titleSectionFieldDefinition
 ];

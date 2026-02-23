@@ -13,7 +13,12 @@ app.engine('handlebars', engine({
     defaultLayout: 'main',
     layoutsDir: layoutsDir,
     helpers: {
-        ifelse: (condition: boolean, If: any, Else: any) => condition ? If : Else
+        ifelse: (condition: boolean, If: any, Else: any) => condition ? If : Else,
+        eq: (a: any, b: any) => a === b,
+        includes: (array: Array<any>, value: any) => {
+            if (!Array.isArray(array)) return false;
+            return array.includes(value);
+        }
     }
 }));
 app.set('view engine', 'handlebars');

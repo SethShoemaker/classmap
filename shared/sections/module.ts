@@ -1,3 +1,4 @@
+import { immerable } from "immer";
 import { SectionFieldDefinition } from "./field-definitions/definition";
 import { SectionFieldDefinitions } from "./field-definitions/definitions";
 import { prebuiltSectionFieldDefinitions } from "./field-definitions/prebuilt";
@@ -7,6 +8,7 @@ import { TextSectionField } from "./fields/text-field";
 import { Section } from "./section";
 
 export class SectionsModule {
+    [immerable] = true
 
     public constructor() {
         this._fieldDefinitions = new SectionFieldDefinitions();

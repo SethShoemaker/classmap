@@ -1,6 +1,8 @@
+import { immerable } from "immer";
 import { SectionFieldType } from "../field-definitions/type";
 
 export abstract class SectionField {
+    [immerable] = true;
 
     public abstract get type(): SectionFieldType;
 

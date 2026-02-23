@@ -20,14 +20,14 @@ sectionSearchRouter.get("/sections", maybeAttachApiKey, requireApiKey, async (re
 
     for (const filter of filters) {
         switch (filter.type) {
-            case sectionSearchFilterType.textSearch:
+            case sectionSearchFilterType.textSearch.id:
                 break;
-            case sectionSearchFilterType.multiSelectOr:
+            case sectionSearchFilterType.multiSelectOr.id:
                 const values = queryParamValueArray(filter.slug, request);
                 if (values.length > 0) {
                     sections = sections.filter(section => {
                         for (const value of values) {
-                            if (section[filter.data.fieldName] == value) {
+                            if (section[filter.fieldName] == value) {
                                 return true;
                             }
                         }
@@ -36,7 +36,7 @@ sectionSearchRouter.get("/sections", maybeAttachApiKey, requireApiKey, async (re
                 }
                 break;
             default:
-                throw new Error(`unhandled section search filter type ${filter.type.id}`);
+                throw new Error(`unhandled section search filter type ${filter.type}`);
         }
     }
 
