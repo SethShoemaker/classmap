@@ -3,6 +3,7 @@ import type { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema
+        .withSchema(process.env.DB_SCHEMA || 'dbo')
         .createTable("section_search_filter", (table) => {
             table.integer('id').primary().notNullable();
             table.string("name").notNullable().unique();
@@ -11,17 +12,17 @@ export async function up(knex: Knex): Promise<void> {
             table.string("type").notNullable();
         })
         .createTable("section_search_filter_section_field_usage", (table) => {
-            table.integer("filter_id").notNullable().references("section_search_filter.id");
-            table.string("field_usage_id").notNullable().references("section_field_usage.id");
+            table.integer("filter_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_search_filter`);
+            table.integer("field_usage_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_field_usage`);
             table.primary(["filter_id", "field_usage_id"]);
         })
         .createTable("section_search_text_search_filter", (table) => {
-            table.integer("filter_id").primary().notNullable().references("section_search_filter.id");
-            table.string("field_id").notNullable().references("section_field.id");
+            table.integer("filter_id").primary().notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_search_filter`);
+            table.integer("field_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_field`);
         })
         .createTable("section_search_multi_select_or_filter", (table) => {
-            table.integer("filter_id").primary().notNullable().references("section_search_filter.id");
-            table.string("field_id").notNullable().references("section_field.id");
+            table.integer("filter_id").primary().notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_search_filter`);
+            table.integer("field_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_field`);
         });
 }
 

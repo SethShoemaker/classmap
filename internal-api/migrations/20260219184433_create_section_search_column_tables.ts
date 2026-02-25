@@ -3,6 +3,7 @@ import type { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
     return knex.schema
+        .withSchema(process.env.DB_SCHEMA || 'dbo')
         .createTable("section_search_column", (table) => {
             table.integer('id').primary().notNullable();
             table.string("name").notNullable().unique();
@@ -10,13 +11,13 @@ export async function up(knex: Knex): Promise<void> {
             table.string("type").notNullable();
         })
         .createTable("section_search_column_section_field_usage", (table) => {
-            table.string("column_id").notNullable().references("section_search_column.id");
-            table.string("field_usage_id").notNullable().references("section_field_usage.id");
+            table.integer("column_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_search_column`);
+            table.integer("field_usage_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_field_usage`);
             table.primary(["column_id", "field_usage_id"]);
         })
         .createTable("section_search_basic_column", (table) => {
-            table.string("column_id").primary().notNullable().references("section_search_column.id");
-            table.string("field_id").notNullable().references("section_field.id");
+            table.integer("column_id").primary().notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_search_column`);
+            table.integer("field_id").notNullable().references("id").inTable(`${process.env.DB_SCHEMA ? process.env.DB_SCHEMA + '.' : ''}section_field`);
         });
 }
 
