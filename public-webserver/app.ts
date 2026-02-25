@@ -16,9 +16,12 @@ app.engine('handlebars', engine({
         ifelse: (condition: boolean, If: any, Else: any) => condition ? If : Else,
         eq: (a: any, b: any) => a === b,
         includes: (array: Array<any>, value: any) => {
-            if (!Array.isArray(array)) return false;
-            return array.includes(value);
-        }
+            if (array == null && array === value) return true;
+            if (typeof (array) == "string" && array === value) return true;
+            if (Array.isArray(array) && array.includes(value)) return true;
+            return false;
+        },
+        json: (ctx: any) => JSON.stringify(ctx)
     }
 }));
 app.set('view engine', 'handlebars');

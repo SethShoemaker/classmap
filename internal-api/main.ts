@@ -5,15 +5,13 @@ import { app } from "./app";
 import { sisIngestRouter } from "./routers/sis-ingest";
 import { configRouter } from './routers/config';
 import { sectionSearchRouter } from './routers/section-search';
-import { sectionSearchCache } from './section-search/cache';
-import { knex } from './knexfile';
+import { nullStringMiddleware } from './helpers/query-params';
 
 (async () => {
     try {
         app.use(express.urlencoded({ extended: true, limit: '50mb' }));
         app.use(express.json({ limit: '50mb' }));
-
-        await sectionSearchCache.update(knex);
+        app.use(nullStringMiddleware)
 
         app.use('/sisIngest', sisIngestRouter)
         app.use('/config', configRouter)

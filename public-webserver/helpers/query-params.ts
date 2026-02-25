@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { NextFunction, Request, Response } from "express";
 
 export function nullStringMiddleware(request: Request, response: Response, next: NextFunction) {
     Object.defineProperty(request, 'query', { ...Object.getOwnPropertyDescriptor(request, 'query'), value: request.query, writable: true });
@@ -19,10 +19,10 @@ export function nullStringMiddleware(request: Request, response: Response, next:
     next();
 }
 
-export function queryParamValueArray(queryParam: string, request: Request): Array<string | null> {
+export function queryParamValueArray(queryParam: string, request: Request): Array<string> {
     const query = request.query[queryParam];
 
-    if (query === undefined) {
+    if (!query) {
         return [];
     }
 
@@ -31,9 +31,5 @@ export function queryParamValueArray(queryParam: string, request: Request): Arra
         return query;
     }
 
-    if (query == null) {
-        return [null];
-    }
-
-    return query.toString().split(',').map(s => s == '' ? null : s);
+    return query.toString().split(',');
 }

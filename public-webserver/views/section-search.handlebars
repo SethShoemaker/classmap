@@ -1,0 +1,67 @@
+<div class="p-6 space-y-6">
+
+    <form method="GET" class="card bg-base-200 p-6 space-y-4">
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {{#each filters}}
+            <div>
+                <label class="label">
+                    <span class="label-text font-semibold">{{this.name}}</span>
+                </label>
+
+                {{#if (eq this.type "text_search")}}
+                <input type="text" name="{{this.slug}}" value="{{lookup ../query this.slug}}"
+                    class="input input-bordered w-full" placeholder="Search {{this.name}}" />
+                {{/if}}
+
+                {{#if (eq this.type "multi_select_or")}}
+                <select name="{{this.slug}}" multiple class="select select-bordered w-full h-40">
+                    {{#each this.inputOptions}}
+                    <option value="{{ifelse this this 'null'}}" {{#if (includes (lookup ../../query ../slug) this)}}selected{{/if}}>
+                        {{ifelse this this '(none)'}}
+                    </option>
+                    {{/each}}
+                </select>
+                {{/if}}
+            </div>
+            {{/each}}
+        </div>
+
+        <div class="flex gap-2">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+            <a href="/" class="btn btn-ghost">Reset</a>
+        </div>
+
+    </form>
+
+    <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+
+            <thead>
+                <tr>
+                    {{#each columns}}
+                    <th>{{this.name}}</th>
+                    {{/each}}
+                </tr>
+            </thead>
+
+            <tbody>
+                {{#each records}}
+                <tr>
+                    {{#each ../columns}}
+                    <td>{{lookup ../this this.field}}</td>
+                    {{/each}}
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="{{config.columns.length}}" class="text-center p-4">
+                        No results found
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+
+        </table>
+    </div>
+
+</div>

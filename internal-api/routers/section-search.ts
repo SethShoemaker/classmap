@@ -1,21 +1,29 @@
 import express, { Request, Response } from "express";
 import { maybeAttachApiKey, requireApiKey } from "../auth/apiKey";
 import { sectionSearchFilterType } from "../section-search/filter-type";
-import { sectionSearchCache } from "../section-search/cache";
 import { queryParamValueArray } from "../helpers/query-params";
+import { getSectionSearchFilters } from "../section-search/filters";
+import { knex } from "../knexfile";
+import { getSectionSearchColumns } from "../section-search/columns";
+import { getSectionsInfo } from "../sections/sections";
 
 export const sectionSearchRouter = express.Router();
 
 sectionSearchRouter.get("/sections", maybeAttachApiKey, requireApiKey, async (request: Request, res: Response) => {
 
-    const columns = sectionSearchCache.columns;
-    const filters = sectionSearchCache.filters;
-
-    let sections = [...sectionSearchCache.sections];
+    let [columns, filters, sections] = await Promise.all([
+        getSectionSearchColumns(knex),
+        getSectionSearchFilters(knex),
+        getSectionsInfo(knex),
+    ])
 
     for (const filter of filters) {
         switch (filter.type) {
             case sectionSearchFilterType.textSearch.id:
+                const query = request.query[filter.slug];
+                if (query !== undefined) {
+                    sections = sections.filter(section => section[filter.fieldName].includes(query));
+                }
                 break;
             case sectionSearchFilterType.multiSelectOr.id:
                 const values = queryParamValueArray(filter.slug, request);
