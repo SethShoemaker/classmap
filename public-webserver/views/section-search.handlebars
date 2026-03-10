@@ -1,5 +1,7 @@
 <div class="p-6 space-y-6">
 
+    <h1 class="text-5xl md:text-6xl font-bold tracking-tight"> {{ config.headingText }}</h1>
+
     <form method="GET" class="card bg-base-200 p-6 space-y-4">
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -135,7 +137,7 @@
             const params = new URLSearchParams(window.location.search);
             params.set("page", page);
             params.set("per_page", {{ perPage }});
-            window.location.search = params.toString();
+        window.location.search = params.toString();
         }
     </script>
 

@@ -34,7 +34,8 @@ app.engine('handlebars', engine({
         and: (a: any, b: any) => a && b,
         array: (...args: any[]) => args.slice(0, -1),
         min: (a: any, b: any) => Math.min(a, b),
-        max: (a: any, b: any) => Math.max(a, b)
+        max: (a: any, b: any) => Math.max(a, b),
+        daisyVar: (key: string) => '--' + key.replace(/[A-Z]/g, (m: string) => '-' + m.toLowerCase()).replace(/[a-z][0-9]/g, (m: string) => m[0] + '-' + m[1]),
     }
 }));
 app.set('view engine', 'handlebars');

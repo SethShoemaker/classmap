@@ -9,8 +9,13 @@ import { UpdateCollector } from "../helpers/database-update-collector";
 import { getSectionSearchFilters } from "../section-search/filters";
 import { getSectionSearchColumns } from "../section-search/columns";
 import { tableName } from "../helpers/database-tables";
+import { getColorSchemes } from "../color-scheme/color-scheme";
 
 export const configRouter = express.Router();
+
+configRouter.get('/color-scheme', maybeAttachApiKey, requireApiKey, async (request: Request, res: Response) => {
+    res.json(await getColorSchemes(knex));
+});
 
 configRouter.get('/sections', maybeAttachApiKey, requireApiKey, async (request: Request, res: Response) => {
     res.json(await getSectionFieldsInfo(knex));

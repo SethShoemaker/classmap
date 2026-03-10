@@ -5,9 +5,22 @@
     <meta charset="utf-8">
     <title>{{title}}</title>
     <link rel="stylesheet" href="/assets/daisyui@5.css">
+    <style>
+        [data-theme="light"] {
+            {{#each theme.light}}
+            {{daisyVar @key}}: {{this}};
+            {{/each}}
+        }
+
+        [data-theme="dark"] {
+            {{#each theme.dark}}
+            {{daisyVar @key}}: {{this}};
+            {{/each}}
+        }
+    </style>
 </head>
 
-<body>
+<body data-theme="light">
 
     {{{body}}}
 

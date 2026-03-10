@@ -2,6 +2,7 @@ import { Worker, isMainThread, parentPort } from "node:worker_threads";
 import { getSectionSearchColumns } from "../section-search/columns";
 import { getSectionSearchFilters } from "../section-search/filters";
 import { getSectionsInfo } from "../sections/sections";
+import { getSectionSearchConfig, SectionSearchConfig } from "../section-search/config";
 import { knex } from "../knexfile";
 
 export const sectionSearchCache: { data: SectionSearchCacheData | null } = {
@@ -11,7 +12,8 @@ export const sectionSearchCache: { data: SectionSearchCacheData | null } = {
 export type SectionSearchCacheData = {
     sections: Record<string, any>[],
     columns: Record<string, any>[],
-    filters: Record<string, any>[]
+    filters: Record<string, any>[],
+    config: SectionSearchConfig
 }
 
 export async function updateCache(): Promise<void> {
@@ -35,11 +37,13 @@ if (!isMainThread) {
         getSectionSearchColumns(knex),
         getSectionSearchFilters(knex),
         getSectionsInfo(knex),
+        getSectionSearchConfig(knex),
     ])
     .then((returns): SectionSearchCacheData => ({
         columns: returns[0],
         filters: returns[1],
-        sections: returns[2]
+        sections: returns[2],
+        config: returns[3]
     }))
     .then((cacheData) => parentPort!.postMessage(cacheData));
 }

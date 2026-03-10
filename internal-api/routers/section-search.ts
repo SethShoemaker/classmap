@@ -8,7 +8,7 @@ export const sectionSearchRouter = express.Router();
 
 sectionSearchRouter.get("/sections", maybeAttachApiKey, requireApiKey, async (request: Request, res: Response) => {
 
-    let { columns, filters, sections } = sectionSearchCache.data!;
+    let { columns, filters, sections, config } = sectionSearchCache.data!;
 
     for (const filter of filters) {
         switch (filter.type) {
@@ -58,5 +58,6 @@ sectionSearchRouter.get("/sections", maybeAttachApiKey, requireApiKey, async (re
         records: sections,
         filters: filters,
         columns: columns,
+        config: config
     })
 })
