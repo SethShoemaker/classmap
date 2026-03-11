@@ -132,13 +132,48 @@
         </div>
     </div>
 
+    <div class="flex justify-center mt-6">
+        <button class="btn btn-secondary" onclick="changeTheme()">Change Theme</button>
+    </div>
+
     <script>
         function gotoPage(page) {
             const params = new URLSearchParams(window.location.search);
             params.set("page", page);
             params.set("per_page", {{ perPage }});
-        window.location.search = params.toString();
+            window.location.search = params.toString();
         }
+
+        function setCookie(name, value) {
+            const expires = new Date();
+            expires.setFullYear(expires.getFullYear() + 20);
+
+            document.cookie =
+                encodeURIComponent(name) +
+                "=" +
+                encodeURIComponent(value) +
+                "; expires=" + expires.toUTCString() +
+                "; path=/";
+        }
+
+        function getCookie(name) {
+            const nameEq = encodeURIComponent(name) + "=";
+
+            const cookies = document.cookie.split("; ");
+            for (const cookie of cookies) {
+                if (cookie.startsWith(nameEq)) {
+                    return decodeURIComponent(cookie.substring(nameEq.length));
+                }
+            }
+
+            return null;
+        }
+
+        function changeTheme() {
+            setCookie("colorScheme", getCookie("colorScheme") == "light" ? "dark" : "light");
+            location.reload();
+        }
+
     </script>
 
 </div>

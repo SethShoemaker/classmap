@@ -6,10 +6,12 @@ import { sectionSearchRouter } from "./routers/section-search";
 import path from 'path';
 import { nullStringMiddleware } from "./helpers/query-params";
 import { colorSchemeMiddleware } from "./helpers/color-scheme";
+import cookieParser from 'cookie-parser';
 
 (async () => {
     try {
         app.use(express.json())
+        app.use(cookieParser())
         app.use(nullStringMiddleware)
         app.use(colorSchemeMiddleware)
 

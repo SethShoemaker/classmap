@@ -8,5 +8,13 @@ export async function colorSchemeMiddleware(request: Request, response: Response
     });
     const schemesJson = await schemes.json();
     response.locals.theme = schemesJson;
+    if (["light", "dark"].includes(request.cookies?.colorScheme)) {
+        response.locals.themeChoice = request.cookies!.colorScheme;
+    } else {
+        response.cookie("colorScheme", "light", {
+            expires: new Date('2045-01-01')
+        });
+        response.locals.themeChoice = "light";
+    }
     next();
 }
