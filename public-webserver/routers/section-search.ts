@@ -25,6 +25,8 @@ sectionSearchRouter.get('/', async (request: Request, res: Response) => {
                             label: filter.name,
                             inputName: filter.slug,
                             placeholder: `Search ${filter.name}`,
+                            autoFocus: typeof(request.query["lastInputInteractedWith"]) == "string" ? request.query["lastInputInteractedWith"].replace(/__[0-9]+$/g, '') == filter.slug : false,
+                            cursorPosition: typeof(request.query["lastInputInteractedWith"]) == "string" && /__[0-9]+$/g.test(request.query["lastInputInteractedWith"]) ? parseInt(request.query["lastInputInteractedWith"].substring(request.query["lastInputInteractedWith"].lastIndexOf("_") + 1)) : 0,
                             value: request.query[filter.slug] ?? null
                         };
                     case "multi_select_or":
@@ -34,6 +36,7 @@ sectionSearchRouter.get('/', async (request: Request, res: Response) => {
                             label: filter.name,
                             inputName: filter.slug,
                             placeholder: values.length > 0 ? values.map(v => v ? v : '(none)').join(',') : `Select ${filter.name}`,
+                            autoFocus: request.query["lastInputInteractedWith"] == filter.slug,
                             inputOptions: filter.inputOptions
                                 .map((inputOption: any) => ({
                                     value: inputOption ? inputOption : 'null',

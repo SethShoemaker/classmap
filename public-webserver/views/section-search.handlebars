@@ -2,7 +2,9 @@
 
     <h1 class="text-5xl md:text-6xl font-bold tracking-tight"> {{ config.headingText }}</h1>
 
-    <form method="GET" class="card bg-base-200 p-6 space-y-4">
+    <form method="GET" class="card bg-base-200 p-6 space-y-4" id="searchForm">
+
+        <input type="hidden" name="lastInputInteractedWith" id="lastInputInteractedWith">
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             {{#each filters}}
@@ -12,21 +14,38 @@
                 </label>
 
                 {{#if (eq this.type "text_search")}}
-                <input type="text" name="{{this.inputName}}" value="{{this.value}}"
-                    class="input input-bordered w-full" placeholder="{{this.placeholder}}" />
+                <input type="text" name="{{this.inputName}}" value="{{this.value}}" class="input input-bordered w-full"
+                    placeholder="{{this.placeholder}}" oninput="onInputChange('{{this.inputName}}' + '__' + this.selectionStart)" id="text-search-input-{{this.inputName}}" />
+                {{#if this.autoFocus }} 
+                <script>
+                    window.addEventListener("DOMContentLoaded", function() {
+                        document.getElementById("text-search-input-{{this.inputName}}").focus();
+                        document.getElementById("text-search-input-{{this.inputName}}").setSelectionRange({{this.cursorPosition}}, {{this.cursorPosition}});
+                    });
+                </script>
+                {{/if}}
                 {{/if}}
 
                 {{#if (eq this.type "multi_select_or")}}
                 <div class="dropdown w-full">
                     <div tabindex="0" role="button"
-                        class="input input-bordered w-full flex items-center cursor-pointer">
+                        class="input input-bordered w-full flex items-center cursor-pointer" id="multi-select-or-button-{{this.inputName}}">
                         {{this.placeholder}}
                     </div>
+
+                    {{#if this.autoFocus }}
+                    <script>
+                        window.addEventListener("DOMContentLoaded", function() {
+                            document.getElementById("multi-select-or-button-{{this.inputName}}").focus()
+                        });
+                    </script>
+                    {{/if}}
 
                     <div tabindex="0"
                         class="dropdown-content z-[1] mt-1 w-full p-2 shadow bg-base-100 rounded-box border">
 
-                        <select name="{{this.inputName}}" multiple class="select select-ghost w-full">
+                        <select name="{{this.inputName}}" id="{{this.inputName}}" multiple
+                            class="select select-ghost w-full" onchange="onInputChange('{{this.inputName}}')" >
 
                             {{#each this.inputOptions}}
                             <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>
@@ -139,6 +158,7 @@
     <script>
         function gotoPage(page) {
             const params = new URLSearchParams(window.location.search);
+            params.delete("lastInputInteractedWith")
             params.set("page", page);
             params.set("per_page", {{ perPage }});
             window.location.search = params.toString();
@@ -172,6 +192,18 @@
         function changeTheme() {
             setCookie("colorScheme", getCookie("colorScheme") == "light" ? "dark" : "light");
             location.reload();
+        }
+
+        function onInputChange(inputName) {
+            clearTimeout(window._debounceTimer);
+            window._debounceTimer = setTimeout(() => submitSearch(inputName), 500);
+        }
+
+        function submitSearch(lastInputInteractedWith = "") {
+            if (lastInputInteractedWith.length > 0) {
+                document.querySelector('#lastInputInteractedWith').value = lastInputInteractedWith;
+            }
+            document.querySelector('#searchForm').submit();
         }
 
     </script>
