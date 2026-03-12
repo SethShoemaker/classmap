@@ -15,12 +15,15 @@
 
                 {{#if (eq this.type "text_search")}}
                 <input type="text" name="{{this.inputName}}" value="{{this.value}}" class="input input-bordered w-full"
-                    placeholder="{{this.placeholder}}" oninput="onInputChange('{{this.inputName}}' + '__' + this.selectionStart)" id="text-search-input-{{this.inputName}}" />
+                    placeholder="{{this.placeholder}}" oninput="onInputChange('{{this.inputName}}' + '__' + this.selectionStart, 500)" id="text-search-input-{{this.inputName}}" />
                 {{#if this.autoFocus }} 
                 <script>
                     window.addEventListener("DOMContentLoaded", function() {
                         document.getElementById("text-search-input-{{this.inputName}}").focus();
                         document.getElementById("text-search-input-{{this.inputName}}").setSelectionRange({{this.cursorPosition}}, {{this.cursorPosition}});
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete("lastInputInteractedWith");
+                        window.history.replaceState({}, "", url);
                     });
                 </script>
                 {{/if}}
@@ -37,6 +40,9 @@
                     <script>
                         window.addEventListener("DOMContentLoaded", function() {
                             document.getElementById("multi-select-or-button-{{this.inputName}}").focus()
+                            const url = new URL(window.location.href);
+                            url.searchParams.delete("lastInputInteractedWith");
+                            window.history.replaceState({}, "", url);
                         });
                     </script>
                     {{/if}}
@@ -45,7 +51,7 @@
                         class="dropdown-content z-[1] mt-1 w-full p-2 shadow bg-base-100 rounded-box border">
 
                         <select name="{{this.inputName}}" id="{{this.inputName}}" multiple
-                            class="select select-ghost w-full" onchange="onInputChange('{{this.inputName}}')" >
+                            class="select select-ghost w-full" onchange="onInputChange('{{this.inputName}}', 0)" >
 
                             {{#each this.inputOptions}}
                             <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>
@@ -194,9 +200,9 @@
             location.reload();
         }
 
-        function onInputChange(inputName) {
+        function onInputChange(inputName, delay = 500) {
             clearTimeout(window._debounceTimer);
-            window._debounceTimer = setTimeout(() => submitSearch(inputName), 500);
+            window._debounceTimer = setTimeout(() => submitSearch(inputName), delay);
         }
 
         function submitSearch(lastInputInteractedWith = "") {
